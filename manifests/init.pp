@@ -1,9 +1,19 @@
-# modules/skeleton/manifests/init.pp - manage skeleton stuff
+# modules/djbdns/manifests/init.pp - manage djbdns stuff
 # Copyright (C) 2007 admin@immerda.ch
 #
 
-# modules_dir { "skeleton": }
+# modules_dir { "djbdns": }
 
-class skeleton {
+class djbdns {
+    package { 'djbdns':
+        ensure => present,
+        category => $operatingsystem ? {
+            gentoo => 'net-dns',
+            default => '',
+        },
+    }
 
+    
+    
 }
+
