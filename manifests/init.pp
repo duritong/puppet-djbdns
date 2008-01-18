@@ -10,7 +10,7 @@ class djbdns {
         category => $operatingsystem ? {
             gentoo => 'net-dns',
             default => '',
-        },
+        }
     }
     
 }
