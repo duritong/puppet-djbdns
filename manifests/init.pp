@@ -30,5 +30,23 @@ class djbdns {
         creates => "/var/axfrdns/env/IP"
     }
 
+# tcp file, must make afterwards
+    file { "/var/axfrdns/tcp":
+        ensure => "present",
+        source => "puppet://$servername/djbdns/axfrdnstcp",
+    }
+    exec { "/usr/bin/make -f /var/axfrdns/Makefile -C /var/axfrdns/":
+        subscribe => file["/etc/axfrdns/tcp"],
+        refreshonly => true
+    }
+
+    # this is starting the dns!
+    # ln -s /var/axfrdns /service
+    file { "/service/tinydns":
+        ensure => "/var/tinydns"
+    }
+    file { "/service/axfrdns":
+        ensure => "/var/axfrdns"
+    }
 }
 
