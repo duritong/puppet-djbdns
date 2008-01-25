@@ -23,7 +23,7 @@ class djbdns {
         uid => 105,
     }
 
-    exec { "tinydns-conf tinydns dnslog /var/tinydns $ipaddress":
+    exec { "/usr/bin/tinydns-conf tinydns dnslog /var/tinydns $ipaddress":
         creates => "/var/tinydns/env/IP"
     }
 
