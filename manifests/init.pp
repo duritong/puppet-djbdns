@@ -26,7 +26,7 @@ class djbdns {
     exec { "/usr/bin/tinydns-conf tinydns dnslog /var/tinydns $ipaddress":
         creates => "/var/tinydns/env/IP"
     }
-    exec { "axfrdns-conf axfrdns dnslog /var/axfrdns /var/tinydns $ipaddress":
+    exec { "/usr/bin/axfrdns-conf axfrdns dnslog /var/axfrdns /var/tinydns $ipaddress":
         creates => "/var/axfrdns/env/IP"
     }
 
