@@ -13,5 +13,19 @@ class djbdns {
         }
     }
     
+    user { "axfrdns":
+        allowdupe => false,
+        comment => "tinydnstcp",
+        ensure => present,
+        gid => 200,
+        home => "/nonexistent",
+        shell => "/usr/sbin/nologin",
+        uid => 105,
+    }
+
+    exec { "tinydns-conf tinydns dnslog /var/tinydns $ipaddress":
+        creates => "/var/tinydns/env/IP"
+    }
+
 }
 
