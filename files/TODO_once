@@ -1,0 +1,4 @@
+
+tinydns-conf tinydns dnslog /var/tinydns 192.168.2.204
+axfrdns-conf axfrdns dnslog /var/axfrdns /var/tinydns 192.168.2.204
+
