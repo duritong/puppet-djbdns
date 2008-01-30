@@ -36,7 +36,7 @@ class djbdns {
         source => "puppet://$servername/djbdns/axfrdnstcp",
     }
     exec { "/usr/bin/make -f /var/axfrdns/Makefile -C /var/axfrdns/":
-        subscribe => file["/var/axfrdns/tcp"],
+        subscribe => File["/var/axfrdns/tcp"],
         refreshonly => true
     }
 
