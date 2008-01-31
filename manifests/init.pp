@@ -22,12 +22,30 @@ class djbdns {
         shell => "/usr/sbin/nologin",
         uid => 105,
     }
+    
+    case $operatingsystem {
+        gentoo:{
+            selinux::loadmodule {"djbdns": location => "/usr/share/selinux/strict/djbdns.pp" }
+            selinux::loadmodule {"daemontools": location => "/usr/share/selinux/strict/daemontools.pp" }
+        }
+    }
 
     exec { "/usr/bin/tinydns-conf tinydns dnslog /var/tinydns $ipaddress":
         creates => "/var/tinydns/env/IP"
     }
     exec { "/usr/bin/axfrdns-conf axfrdns dnslog /var/axfrdns /var/tinydns $ipaddress":
         creates => "/var/axfrdns/env/IP"
+    }
+
+    # relabel on gentoo, just the first time
+    case $operatingsystem {
+        gentoo:{
+            # if selinux ... ????
+            exec { "/usr/sbin/rlpkg daemontools djbdns":
+                path => "/usr/bin:/usr/sbin:/bin",
+                unless => "/usr/bin/ls -laZ /var/tinydns/root/add-alias | /bin/grep djbdns_tinydns_conf_t 2>/dev/null"
+            }
+        }
     }
 
 # tcp file, must make afterwards
