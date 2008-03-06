@@ -52,6 +52,8 @@ class djbdns {
     file { "/var/axfrdns/tcp":
         ensure => "present",
         source => "puppet://$servername/djbdns/axfrdnstcp",
+        owner => tinydns, 
+        group => 0,
     }
     exec { "/usr/bin/make -f /var/axfrdns/Makefile -C /var/axfrdns/":
         subscribe => File["/var/axfrdns/tcp"],
