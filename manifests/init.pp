@@ -68,5 +68,7 @@ class djbdns {
     file { "/service/axfrdns":
         ensure => "/var/axfrdns"
     }
+
+    include munin::plugins::djbdns
 }
 
