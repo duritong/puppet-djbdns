@@ -36,7 +36,7 @@ class djbdns::base {
     # tcp file, must make afterwards
     file { "/var/axfrdns/tcp":
         ensure => "present",
-        source => "puppet://$servername/djbdns/axfrdnstcp",
+        source => "puppet://$server/djbdns/axfrdnstcp",
         owner => tinydns, 
         group => 0,
     }
@@ -57,9 +57,9 @@ class djbdns::base {
     file {
         "/var/tinydns/root/data":
         ensure => file, owner => tinydns, group => 0, mode => 640,
-        source => [ "puppet://$servername/files/djbdns/immerda/data", 
-                    "puppet://$servername/files/djbdns/data",
-                    "puppet://$servername/djbdns/data" ],
+        source => [ "puppet://$server/files/djbdns/immerda/data", 
+                    "puppet://$server/files/djbdns/data",
+                    "puppet://$server/djbdns/data" ],
         notify => Exec[generate_data_db],
     }
 
