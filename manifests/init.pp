@@ -9,6 +9,10 @@ class djbdns {
         gentoo: { include djbdns::gentoo }
         default: { include djbdns::base }
     }
+
+    if $selinux {
+        include djbdns::selinux
+    }
 }
 
 class djbdns::base {
