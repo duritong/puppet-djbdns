@@ -107,7 +107,7 @@ define djbdns::addArecord(
         '' => $name,
         default => "${a_record}.${real_domain}"
     }
-    djbdns::entry{"${real_domain}.d/030-a_record-{$name}":
+    djbdns::entry{"${real_domain}.d/030-a_record-${name}":
         line => "+${real_a_record}:${ip}:${ttl}::${device}",
     }
 }
@@ -123,6 +123,7 @@ define djbdns::managed_file () {
         force => true,
         purge => true,
         recurse => true,
+        require => File["/var/lib/puppet/modules/djbdns"],
         mode => 0755, owner => root, group => 0;
     }
 
@@ -139,7 +140,8 @@ define djbdns::entry ($line) {
     $dir = dirname($target)
     file { $target:
         content => "${line}\n",
-        mode => 0600, owner => root, group => 0,
         notify => Exec["concat_${dir}"],
+        require => File["/var/lib/puppet/modules/djbdns/${name}.d"],
+        mode => 0600, owner => root, group => 0;
     }
 }

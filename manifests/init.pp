@@ -16,14 +16,16 @@ class djbdns {
         include djbdns::selinux
     }
 
-    file { "/var/lib/puppet/modules/djbdns":
-        ensure => directory,
-        force => true,
-        mode => 0755, owner => root, group => 0;
+    if $use_munin {
+        include munin::plugins::djbdns
     }
+
 }
 
 class djbdns::base {
+    #we need daemontools for djbdns
+    include daemontools
+
     package { 'djbdns':
         ensure => present,
     }
@@ -66,40 +68,29 @@ class djbdns::base {
         ensure => "/var/axfrdns"
     }
 
-    file {
-        "/var/tinydns/root/data":
-        ensure => file, owner => tinydns, group => 0, mode => 640,
-        source => [ "puppet://$server/files/djbdns/immerda/data", 
-                    "puppet://$server/files/djbdns/data",
-                    "puppet://$server/djbdns/data" ],
-        notify => Exec[generate_data_db],
+    file { "/var/lib/puppet/modules/djbdns":
+        ensure => directory,
+        force => true,
+        mode => 0755, owner => root, group => 0;
+    }
+
+    exec{'copy_data':
+        command => 'cat `find /var/lib/puppet/modules/djbdns/ -maxdepth 1 -type f` > /var/tinydns/root/data',
+        refreshonly => true,
+        notify => Exec['generate_data_db'],
+        require => File["/var/lib/puppet/modules/djbdns"],
     }
 
     exec{'generate_data_db':
         command => 'make -f /var/tinydns/root/Makefile -C /var/tinydns/root/',
         refreshonly => true,
-        require => File["/var/tinydns/root/data"],
+        require => File["/var/lib/puppet/modules/djbdns"],
     }
-
-    case $selinux {
-        true: { include djbdns::selinux }
-    }
-
-    include munin::plugins::djbdns
 }
 
 class djbdns::gentoo inherits djbdns::base {
     Package[djbdns]{
         category => 'net-dns',
-    }
-}
-
-class djbdns::selinux {
-    selinux::loadmodule {"djbdns": location => "/usr/share/selinux/strict/djbdns.pp" }
-    selinux::loadmodule {"daemontools": location => "/usr/share/selinux/strict/daemontools.pp" }
-
-    exec { "/usr/sbin/rlpkg daemontools djbdns":
-        unless => "/usr/bin/ls -laZ /var/tinydns/root/add-alias | /bin/grep djbdns_tinydns_conf_t 2>/dev/null"
     }
 }
 
