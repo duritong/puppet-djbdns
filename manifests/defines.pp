@@ -141,7 +141,6 @@ define djbdns::entry ($line) {
     file { $target:
         content => "${line}\n",
         notify => Exec["concat_${dir}"],
-        require => File["/var/lib/puppet/modules/djbdns/${name}.d"],
         mode => 0600, owner => root, group => 0;
     }
 }
