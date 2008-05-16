@@ -20,6 +20,8 @@ define djbdns::adddomain(
     $mailserver_priority = '0',
     $webserverip = '212.103.72.242'
 ){
+    djbdns::managed_file{"$name": }
+
     djbdns::entry{"${name}.d/000-SOA":
         line => "Z${name}:${masternameserver}.:${hostnamster}.:${serial}:",
     }
