@@ -102,7 +102,7 @@ define djbdns::managed_file () {
 }
 
 
-define djbsns::entry ($line) {
+define djbdns::entry ($line) {
     $target = "/var/lib/puppet/modules/djbdns/${name}"
     $dir = dirname($target)
     file { $target:
