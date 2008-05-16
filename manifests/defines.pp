@@ -118,6 +118,7 @@ define djbdns::managed_file () {
     $dir = "/var/lib/puppet/modules/djbdns/${name}.d"
 
     file {"${dir}":
+        source => "puppet://$server/djbdns/empty", # so we can purge
         ensure => directory,
         force => true,
         purge => true,
