@@ -59,13 +59,11 @@ class djbdns::base {
         refreshonly => true
     }
 
-    # this is starting the dns!
-    # ln -s /var/axfrdns /service
-    file { "/service/tinydns":
-        ensure => "/var/tinydns"
+    daemontools::service{"tinydns":
+        source => "/var/tinydns"
     }
-    file { "/service/axfrdns":
-        ensure => "/var/axfrdns"
+    daemontools::service{"axfrdns":
+        source => "/var/axfrdns"
     }
 
     file { "/var/lib/puppet/modules/djbdns":
