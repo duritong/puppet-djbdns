@@ -40,7 +40,7 @@ define djbdns::adddomain(
         }
     }
 
-    djbdns::addArecord{$name: ip => $real_ip }
+    djbdns::addArecord{$name: ip => $real_ip, domain => $name }
     case $webserverip {
         '': { info("no webserver ip defined, won't define a webserver") }
         default: {
@@ -49,7 +49,7 @@ define djbdns::adddomain(
                 default => $webserverip
             }
 
-            djbdns::addArecord{"www.${name}": ip => $real_ip }
+            djbdns::addArecord{"www.${name}": ip => $real_ip, domain => $name }
         } 
     }
 }
@@ -85,8 +85,7 @@ define djbdns::addmailserver(
     djbdns::entry{"${real_domain}.d/02${priority}-mailserver-${name}":
         line => "@${real_domain}::mail.${real_domain}.:${priority}",
     }
-    djbdns::addArecord{$name:
-        a_record => 'mail',
+    djbdns::addArecord{"mail.${name}":
         ip => $mailserverip,
         domain => $real_domain,
     }
@@ -94,8 +93,8 @@ define djbdns::addmailserver(
 
 define djbdns::addArecord(
     $ip,
+    $domain,
     $a_record = '',
-    $domain = '',
     $ttl = '3600',
     $device = 'ex'
 ) {
