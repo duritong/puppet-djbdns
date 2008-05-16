@@ -28,7 +28,7 @@ define djbdns::adddomain(
         line => "Z${name}:${masternameserver}.:${hostmaster}.:${serial}:",
     }
     $nameservers = gsub(split($nameserver, " "), "(.+)", "&${name}::\\1.")
-    djbdns::addnameserversaslist{$nameservers: }
+    djbdns::addnameserversaslist{$nameservers: domain => $name }
 
     case $mailserverip {
         '': { info("no mailserver ip defined, won't define a mailserver")}
