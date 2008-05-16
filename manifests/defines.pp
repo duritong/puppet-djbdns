@@ -14,8 +14,8 @@ define djbdns::headerinfos(
 define djbdns::adddomain(
     $timeout = '3600',
     $masternameserver = 'dns1.glei.ch',
-    $hostmaster = 'hostnamster.glei.ch',
-    $serial = '10455',
+    $hostmaster = 'hostmaster.glei.ch',
+    $serial = '1994200401',
     $mailserverip = '212.103.72.240',
     $mailserver_priority = '0',
     $webserverip = '212.103.72.242'
@@ -23,7 +23,7 @@ define djbdns::adddomain(
     djbdns::managed_file{"$name": }
 
     djbdns::entry{"${name}.d/000-SOA":
-        line => "Z${name}:${masternameserver}.:${hostnamster}.:${serial}:",
+        line => "Z${name}:${masternameserver}.:${hostmaster}.:${serial}:",
     }
     djbdns::addnameserver{$name: 
         nameserver => $masternameserver,
@@ -79,7 +79,7 @@ define djbdns::addArecord(
         default => $domain
     }
     djbdns::entry{"${real_domain}.d/030-a_record-{$name}":
-        line => "+${a_record}.{real_domain}:${ip}:${ttl}::${device}",
+        line => "+${a_record}.${real_domain}:${ip}:${ttl}::${device}",
     }
 }
 
