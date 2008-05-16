@@ -13,26 +13,51 @@ define djbdns::headerinfos(
 
 define djbdns::adddomain(
     $timeout = '3600',
-    $masternameserver = 'dns1.glei.ch',
+    # you can add more than one nameserver by using a list seperated by spaces
+    $nameserver = 'dns1.glei.ch dns2.glei.ch dns3.glei.ch',
+    $mainip = '212.103.72.242',
     $hostmaster = 'hostmaster.glei.ch',
     $serial = '1994200401',
     $mailserverip = '212.103.72.240',
     $mailserver_priority = '0',
-    $webserverip = '212.103.72.242'
+    $webserverip = 'present'
 ){
     djbdns::managed_file{"$name": }
 
     djbdns::entry{"${name}.d/000-SOA":
         line => "Z${name}:${masternameserver}.:${hostmaster}.:${serial}:",
     }
-    djbdns::addnameserver{$name: 
-        nameserver => $masternameserver,
+    $nameservers = gsub(split($nameserver, " "), "(.+)", "&${name}::\\1.")
+    djbdns::addnameserversaslist{$nameservers: }
+
+    case $mailserverip {
+        '': { info("no mailserver ip defined, won't define a mailserver")}
+        default: {
+            djbdns::addmailserver{$name:
+                mailserverip => $mailserverip,
+                priority => $mailserver_priority,
+            } 
+        }
     }
 
-    djbdns::addmailserver{$name:
-        mailserverip => $mailserverip,
-        priority => $mailserver_priority,
-    } 
+    djbdns::addArecord{$name: ip => $real_ip }
+    case $webserverip {
+        '': { info("no webserver ip defined, won't define a webserver") }
+        default: {
+            $real_ip = $webserverip ? {
+                'present' => $mainip,
+                default => $webserverip
+            }
+
+            djbdns::addArecord{"www.${name}": ip => $real_ip }
+        } 
+    }
+}
+
+define djbdns::addnameserversaslist($domain){
+    djbdns::entry{"${domain}.d/010-nameserver-${name}":
+        line => $name
+    }
 }
 
 define djbdns::addnameserver(
@@ -68,8 +93,8 @@ define djbdns::addmailserver(
 }
 
 define djbdns::addArecord(
-    $a_record,
     $ip,
+    $a_record = '',
     $domain = '',
     $ttl = '3600',
     $device = 'ex'
@@ -78,8 +103,13 @@ define djbdns::addArecord(
         '' => $name,
         default => $domain
     }
+
+    $real_a_record = $a_record ? {
+        '' => $name,
+        default => "${a_record}.${real_domain}"
+    }
     djbdns::entry{"${real_domain}.d/030-a_record-{$name}":
-        line => "+${a_record}.${real_domain}:${ip}:${ttl}::${device}",
+        line => "+${real_a_record}:${ip}:${ttl}::${device}",
     }
 }
 
