@@ -4,7 +4,7 @@
 
 modules_dir { "djbdns": }
 
-include "defines.pp"
+import "defines.pp"
 
 class djbdns {
     case $operatingsystem {
