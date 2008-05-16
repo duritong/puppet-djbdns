@@ -2,7 +2,9 @@
 # Copyright (C) 2007 admin@immerda.ch
 #
 
-# modules_dir { "djbdns": }
+modules_dir { "djbdns": }
+
+include defines.pp
 
 class djbdns {
     case $operatingsystem {
@@ -12,6 +14,12 @@ class djbdns {
 
     if $selinux {
         include djbdns::selinux
+    }
+
+    file { "/var/lib/puppet/modules/djbdns":
+        ensure => directory,
+        force => true,
+        mode => 0755, owner => root, group => 0;
     }
 }
 
