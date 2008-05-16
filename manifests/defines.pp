@@ -115,19 +115,6 @@ define djbdns::addArecord(
 
 
 define djbdns::managed_file () {
-#    $dir = "/var/lib/puppet/modules/djbdns/${name}.d"
-#
-#    file {"${dir}":
-#        source => "puppet://$server/djbdns/empty", # so we can purge
-#        ensure => directory,
-#        force => true,
-#        purge => true,
-#        recurse => true,
-#        require => File["/var/lib/puppet/modules/djbdns"],
-#        mode => 0755, owner => root, group => 0;
-#    }
-
-
     concatenated_file { "/var/lib/puppet/modules/djbdns/$name":
         dir => $dir,
         mode => 0600,
