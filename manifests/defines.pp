@@ -144,9 +144,8 @@ define djbdns::addCname(
 
 
 define djbdns::managed_file () {
-    $dir = "/var/lib/puppet/modules/shorewall/${name}.d"
     concatenated_file { "/var/lib/puppet/modules/djbdns/$name":
-        dir => $dir,
+        $dir => "/var/lib/puppet/modules/djbdns/${name}.d",
         owner => root, group => 0, mode => 0600;
     }
 }
