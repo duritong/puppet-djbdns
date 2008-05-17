@@ -81,13 +81,13 @@ class djbdns::base {
         notify => Exec['generate_data_db'],
         require => File["/var/lib/puppet/modules/djbdns"],
         subscribe => [
-            Exec["/var/lib/puppet/modules/djbdns/00-headers"],
-            Exec["/var/lib/puppet/modules/djbdns/soa"],
-            Exec["/var/lib/puppet/modules/djbdns/nameservers"],
-            Exec["/var/lib/puppet/modules/djbdns/mx-records"],
-            Exec["/var/lib/puppet/modules/djbdns/a_records"],
-            Exec["/var/lib/puppet/modules/djbdns/txt_records"],
-            Exec["/var/lib/puppet/modules/djbdns/cnames"]
+            Exec["concat_/var/lib/puppet/modules/djbdns/00-headers"],
+            Exec["concat_/var/lib/puppet/modules/djbdns/soa"],
+            Exec["concat_/var/lib/puppet/modules/djbdns/nameservers"],
+            Exec["concat_/var/lib/puppet/modules/djbdns/mx-records"],
+            Exec["concat_/var/lib/puppet/modules/djbdns/a_records"],
+            Exec["concat_/var/lib/puppet/modules/djbdns/txt_records"],
+            Exec["concat_/var/lib/puppet/modules/djbdns/cnames"]
         ],
     }
 
