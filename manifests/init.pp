@@ -76,7 +76,7 @@ class djbdns::base {
 
 
     exec{'copy_data':
-        command => 'find /var/lib/puppet/modules/djbdns/ -maxdepth 1 -type f sort -z | xargs -0 cat >| /var/tinydns/root/data',
+        command => 'cat `find /var/lib/puppet/modules/djbdns/ -maxdepth 1 -type f | sort -n` > /var/tinydns/root/data',
         refreshonly => true,
         notify => Exec['generate_data_db'],
         require => File["/var/lib/puppet/modules/djbdns"],
