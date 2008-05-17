@@ -135,7 +135,7 @@ define djbdns::addArecord(
 
 define djbdns::addCname(
     $target,
-    $ttl = '3600'
+    $ttl = '3600',
     $location = 'ex'
 ){
     djbdns::entry{"cnames.d/000-cnames-${name}":
