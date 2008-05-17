@@ -14,7 +14,8 @@ define djbdns::headerinfos(
 define djbdns::adddomain(
     $timeout = '3600',
     # you can add more than one nameserver by using a list seperated by spaces
-    $nameserver = 'dns1.glei.ch dns2.glei.ch dns3.glei.ch',
+    $masternameserver = 'dns1.glei.ch',
+    $additionalnameservers = 'dns2.glei.ch dns3.glei.ch',
     $mainip = '212.103.72.242',
     $hostmaster = 'hostmaster.glei.ch',
     $serial = '1994200401',
@@ -22,25 +23,43 @@ define djbdns::adddomain(
     $mailserver_priority = '0',
     $webserverip = 'present'
 ){
+    # begin to manage domain
     djbdns::managed_file{"$name": }
 
+    # add soa record
     djbdns::entry{"${name}.d/000-SOA":
         line => "Z${name}:${masternameserver}.:${hostmaster}.:${serial}:",
     }
-    $nameservers = gsub(split($nameserver, " "), "(.+)", "&${name}::\\1.")
-    djbdns::addnameserversaslist{$nameservers: domain => $name }
 
+    # add nameservers
+    djbdns::addnameserver{$name: nameserver => $masternameserver }
+    case $additionalnameservers {
+        '': { info("no additional nameservers defined") }}
+        default: {
+            $nameservers = gsub(split($additionalnameservers, " "), "(.+)", "&${name}::\\1.:")
+            djbdns::addaslist{$nameservers: domain => $name }
+        }
+    }
+
+    # mailserver?
     case $mailserverip {
         '': { info("no mailserver ip defined, won't define a mailserver")}
         default: {
+            $real_mailip = $mailserverip ? {
+                'present' => $mainip,
+                default => $mailserverip
+            }
             djbdns::addmailserver{$name:
-                mailserverip => $mailserverip,
+                mailserverip => $real_mailip
                 priority => $mailserver_priority,
             } 
         }
     }
 
+    # main A record
     djbdns::addArecord{$name: ip => $real_ip, domain => $name }
+
+    # webserver? add www A record.
     case $webserverip {
         '': { info("no webserver ip defined, won't define a webserver") }
         default: {
@@ -54,12 +73,14 @@ define djbdns::adddomain(
     }
 }
 
-define djbdns::addnameserversaslist($domain){
-    djbdns::entry{"${domain}.d/010-nameserver-${name}":
+# quite ugly, but straight forward with for example a lists of nameservers
+define djbdns::addaslist($domain, $type = 'nameserver', $order = '015' ){
+    djbdns::entry{"${domain}.d/${order}-${type}-${name}":
         line => $name
     }
 }
 
+# define a nameserver
 define djbdns::addnameserver(
     $domain = '',
     $nameserver = 'dns1.glei.ch'
@@ -69,21 +90,22 @@ define djbdns::addnameserver(
         default => $domain
     }
     djbdns::entry{"${real_domain}.d/010-nameserver-${nameserver}":
-        line => "&${real_domain}::${nameserver}.",
+        line => "&${real_domain}::${nameserver}.:",
     }
 }
 
 define djbdns::addmailserver(
     $domain = '',
     $mailserverip = '212.103.72.240',
-    $priority = '0'
+    $priority = '0',
+    $ttl = '3600'
 ){
     $real_domain = $domain ? {
         '' => $name,
         default => $domain
     }
     djbdns::entry{"${real_domain}.d/02${priority}-mailserver-${name}":
-        line => "@${real_domain}::mail.${real_domain}.:${priority}",
+        line => "@${real_domain}::mail.${real_domain}.:${priority}:${ttl}::",
     }
     djbdns::addArecord{"mail.${name}":
         ip => $mailserverip,
