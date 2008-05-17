@@ -137,7 +137,7 @@ define djbdns::addCname(
     $ttl = '3600'
 ){
     djbdns::entry{"cnames.d/040-c_name-${name}":
-        line => "C${name}:${target}:${ttl}
+        line => "C${name}:${target}:${ttl}",
     }
 }
 
