@@ -72,7 +72,8 @@ define djbdns::adddomain(
 
 # quite ugly, but straight forward with for example a lists of nameservers
 define djbdns::addaslist($type = 'nameservers' ){
-    djbdns::entry{"${type}.d/${order}-${type}-${name}":
+    # 999 because lists should go rather to the end
+    djbdns::entry{"${type}.d/999-${name}":
         line => $name
     }
 }
