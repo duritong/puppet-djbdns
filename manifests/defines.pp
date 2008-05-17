@@ -47,7 +47,7 @@ define djbdns::adddomain(
                 default => $mailserverip
             }
             djbdns::addmailserver{$name:
-                mailserverip => $real_mailip
+                mailserverip => $real_mailip,
                 priority => $mailserver_priority,
             } 
         }
