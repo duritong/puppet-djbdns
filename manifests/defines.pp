@@ -6,7 +6,7 @@ define djbdns::headerinfos(
     # set a default external device
     $content = '%ex'
 ){
-    djbdns::entry{"000-header-${name}":
+    djbdns::entry{"00-headers.d/000-header-${name}":
         line => $content,
     }
 }
