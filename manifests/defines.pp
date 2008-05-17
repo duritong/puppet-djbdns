@@ -54,7 +54,7 @@ define djbdns::adddomain(
     }
 
     # main A record
-    djbdns::addArecord{$name: ip => $real_ip}
+    djbdns::addArecord{$name: ip => $mainip}
 
     # webserver? add www A record.
     case $webserverip {
