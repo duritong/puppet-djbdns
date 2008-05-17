@@ -105,7 +105,7 @@ define djbdns::addmailserver(
         line => "@${real_domain}::mail.${real_domain}.:${priority}:${ttl}::",
     }
     djbdns::addArecord{"mailserver-${name}":
-        a_record = 'mail',
+        a_record => 'mail',
         ip => $mailserverip,
         domain => $real_domain,
     }
@@ -134,7 +134,7 @@ define djbdns::addArecord(
 
 define djbdns::addCname(
     $target,
-    $ttl = '3600',
+    $ttl = '3600'
 ){
     djbdns::entry{"cnames.d/040-c_name-${name}":
         line => "C${name}:${target}:${ttl}
