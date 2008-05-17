@@ -72,7 +72,7 @@ class djbdns::base {
         mode => 0755, owner => root, group => 0;
     }
 
-    djbdns::managed_file{[ "00-headers", "soa", "nameservers", "mx-records", "a_records", "txt_records", "cnames"]: }
+    djbdns::managed_file{[ "00-headers", "soa", "nameservers", "mx-records", "a_records", "txt_records", "cnames", "spf", "reverse"]: }
 
 
     exec{'copy_data':
@@ -87,6 +87,8 @@ class djbdns::base {
             Exec["concat_/var/lib/puppet/modules/djbdns/mx-records"],
             Exec["concat_/var/lib/puppet/modules/djbdns/a_records"],
             Exec["concat_/var/lib/puppet/modules/djbdns/txt_records"],
+            Exec["concat_/var/lib/puppet/modules/djbdns/spf"],
+            Exec["concat_/var/lib/puppet/modules/djbdns/reverse"],
             Exec["concat_/var/lib/puppet/modules/djbdns/cnames"]
         ],
     }

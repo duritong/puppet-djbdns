@@ -3,7 +3,7 @@
 # this file is thought to be used to manage domains
 
 define djbdns::headerinfos(
-    # set a default external device
+    # set a default external location
     $content = '%ex'
 ){
     djbdns::entry{"00-headers.d/000-header-${name}":
@@ -15,12 +15,17 @@ define djbdns::adddomain(
     $timeout = '3600',
     # you can add more than one nameserver by using a list seperated by spaces
     $masternameserver = 'dns1.glei.ch',
+    # absent will ignore them, otherweise you can define a list separated by spaces
     $additionalnameservers = 'dns2.glei.ch dns3.glei.ch',
     $mainip = '212.103.72.242',
     $hostmaster = 'hostmaster.glei.ch',
+    # if you use zone transfers you should update them 
+    # ToDo: this sould be increased automagically ;)
     $serial = '1994200401',
+    # absent will ignore it, an ip will be used and present sets the ip to the mainip
     $mailserverip = '212.103.72.240',
     $mailserver_priority = '0',
+    # absent will ignore it, an ip will be used and present sets the ip to the mainip
     $webserverip = 'present'
 ){
     # add soa record
@@ -31,7 +36,7 @@ define djbdns::adddomain(
     # add nameservers
     djbdns::addnameserver{$name: nameserver => $masternameserver }
     case $additionalnameservers {
-        '': { info("no additional nameservers defined") }
+        'absent': { info("no additional nameservers defined") }
         default: {
             $nameservers = gsub(split($additionalnameservers, " "), "(.+)", "&${name}::\\1.:")
             djbdns::addaslist{$nameservers: }
@@ -40,7 +45,7 @@ define djbdns::adddomain(
 
     # mailserver?
     case $mailserverip {
-        '': { info("no mailserver ip defined, won't define a mailserver")}
+        'absent': { info("no mailserver ip defined, won't define a mailserver")}
         default: {
             $real_mailip = $mailserverip ? {
                 'present' => $mainip,
@@ -50,6 +55,8 @@ define djbdns::adddomain(
                 mailserverip => $real_mailip,
                 priority => $mailserver_priority,
             } 
+            # if we have a mailserver we also define an spf entry
+            djbdns::addSPF{$name: }
         }
     }
 
@@ -58,7 +65,7 @@ define djbdns::adddomain(
 
     # webserver? add www A record.
     case $webserverip {
-        '': { info("no webserver ip defined, won't define a webserver") }
+        'absent': { info("no webserver ip defined, won't define a webserver") }
         default: {
             $real_ip = $webserverip ? {
                 'present' => $mainip,
@@ -106,43 +113,59 @@ define djbdns::addmailserver(
         line => "@${real_domain}::mail.${real_domain}.:${priority}:${ttl}::",
     }
     djbdns::addArecord{"mailserver-${name}":
-        a_record => 'mail',
+        a_record => "mail.${real_domain}",
         ip => $mailserverip,
-        domain => $real_domain,
     }
 }
 
 define djbdns::addArecord(
     $ip,
-    $domain = '',
-    $a_record = '',
+    $a_record = 'absent',
     $ttl = '3600',
-    $device = 'ex'
+    $location = 'ex'
 ) {
-    $real_domain = $domain ? {
-        '' => $name,
-        default => $domain
-    }
-
-    $real_a_record = $a_record ? {
-        '' => $name,
-        default => "${a_record}.${real_domain}"
+    case $a_record {
+        'absent': { $real_a_record = $name }
+        default: { $real_a_record = $a_record }
     }
     djbdns::entry{"a_records.d/000-a_records-${name}":
-        line => "+${real_a_record}:${ip}:${ttl}::${device}",
+        line => "+${real_a_record}:${ip}:${ttl}::${location}",
     }
 }
 
 define djbdns::addCname(
     $target,
     $ttl = '3600'
+    $location = 'ex'
 ){
     djbdns::entry{"cnames.d/000-cnames-${name}":
-        line => "C${name}:${target}:${ttl}",
+        line => "C${name}:${target}:${ttl}::${location}",
     }
 }
 
+define djbdns::addSPF(
+    $content = '\046v=spf1\040ip4\072212.103.72.224\05727\040a\040mx\040?all'
+    $ttl = '3600',
+){
+    djbdns::entry{"spf.d/000-spf-${name}":
+        line => ":${name}:16:${content}:${ttl}",
+    }
+}
 
+define djbdns::addReverse(
+    $ip,
+    $domain = 'absent',
+    $ttl = '3600',
+    $location = 'ex'
+){
+    $real_domain = $domain ? {
+        'absent' => $name,
+        default => $domain
+    }
+    djbdns::entry{"reverse.d/000-reverse-${name}":
+        line => "=${real_domain}:${ip}:${ttl}::${location}",
+    }
+}
 
 define djbdns::managed_file () {
     concatenated_file { "/var/lib/puppet/modules/djbdns/$name":
