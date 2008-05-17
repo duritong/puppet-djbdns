@@ -26,11 +26,13 @@ define djbdns::adddomain(
     $mailserverip = '212.103.72.240',
     $mailserver_priority = '0',
     # absent will ignore it, an ip will be used and present sets the ip to the mainip
-    $webserverip = 'present'
+    $webserverip = 'present',
+    # per default we don't need to define a location
+    $location = ''
 ){
     # add soa record
     djbdns::entry{"soa.d/000-soa-${name}":
-        line => "Z${name}:${masternameserver}.:${hostmaster}.:${serial}:",
+        line => "Z${name}:${masternameserver}.:${hostmaster}.:${serial}:::::::${location}",
     }
 
     # add nameservers
@@ -45,7 +47,7 @@ define djbdns::adddomain(
 
     # mailserver?
     case $mailserverip {
-        'absent': { info("no mailserver ip defined, won't define a mailserver")}
+        'absent': { info("no mailserver ip defined for ${name}, won't define a mailserver")}
         default: {
             $real_mailip = $mailserverip ? {
                 'present' => $mainip,
@@ -61,11 +63,16 @@ define djbdns::adddomain(
     }
 
     # main A record
-    djbdns::addArecord{$name: ip => $mainip}
+    case $mainip {
+        absent: { info("no mainip define for ${name}, won't define an a record for it") }
+        default: {
+            djbdns::addArecord{$name: ip => $mainip}
+        }
+    }
 
     # webserver? add www A record.
     case $webserverip {
-        'absent': { info("no webserver ip defined, won't define a webserver") }
+        'absent': { info("no webserver ip defined for ${name}, won't define a webserver") }
         default: {
             $real_ip = $webserverip ? {
                 'present' => $mainip,
