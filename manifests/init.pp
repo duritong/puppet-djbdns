@@ -80,6 +80,15 @@ class djbdns::base {
         refreshonly => true,
         notify => Exec['generate_data_db'],
         require => File["/var/lib/puppet/modules/djbdns"],
+        subscribe => [
+            Exec["/var/lib/puppet/modules/djbdns/00-headers"],
+            Exec["/var/lib/puppet/modules/djbdns/soa"],
+            Exec["/var/lib/puppet/modules/djbdns/nameservers"],
+            Exec["/var/lib/puppet/modules/djbdns/mx-records"],
+            Exec["/var/lib/puppet/modules/djbdns/a_records"],
+            Exec["/var/lib/puppet/modules/djbdns/txt_records"],
+            Exec["/var/lib/puppet/modules/djbdns/cnames"]
+        ],
     }
 
     exec{'generate_data_db':
