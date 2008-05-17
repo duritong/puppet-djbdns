@@ -24,7 +24,7 @@ define djbdns::adddomain(
     $webserverip = 'present'
 ){
     # add soa record
-    djbdns::entry{"soa.d/000-SOA":
+    djbdns::entry{"soa.d/000-soa-${name}":
         line => "Z${name}:${masternameserver}.:${hostmaster}.:${serial}:",
     }
 
@@ -73,7 +73,7 @@ define djbdns::adddomain(
 # quite ugly, but straight forward with for example a lists of nameservers
 define djbdns::addaslist($type = 'nameservers' ){
     # 999 because lists should go rather to the end
-    djbdns::entry{"${type}.d/999-${name}":
+    djbdns::entry{"${type}.d/999-${type}-${name}":
         line => $name
     }
 }
@@ -87,7 +87,7 @@ define djbdns::addnameserver(
         '' => $name,
         default => $domain
     }
-    djbdns::entry{"nameservers.d/${name}-${nameserver}":
+    djbdns::entry{"nameservers.d/000-nameservers-${name}-${nameserver}":
         line => "&${real_domain}::${nameserver}.:",
     }
 }
@@ -102,7 +102,7 @@ define djbdns::addmailserver(
         '' => $name,
         default => $domain
     }
-    djbdns::entry{"mx-records.d/mailserver-${name}":
+    djbdns::entry{"mx-records.d/000-mx-records-${name}":
         line => "@${real_domain}::mail.${real_domain}.:${priority}:${ttl}::",
     }
     djbdns::addArecord{"mailserver-${name}":
@@ -128,7 +128,7 @@ define djbdns::addArecord(
         '' => $name,
         default => "${a_record}.${real_domain}"
     }
-    djbdns::entry{"a_records.d/a_record-${name}":
+    djbdns::entry{"a_records.d/000-a_records-${name}":
         line => "+${real_a_record}:${ip}:${ttl}::${device}",
     }
 }
@@ -137,7 +137,7 @@ define djbdns::addCname(
     $target,
     $ttl = '3600'
 ){
-    djbdns::entry{"cnames.d/040-c_name-${name}":
+    djbdns::entry{"cnames.d/000-cnames-${name}":
         line => "C${name}:${target}:${ttl}",
     }
 }
