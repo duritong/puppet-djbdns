@@ -71,6 +71,7 @@ class djbdns::base {
         force => true,
         mode => 0755, owner => root, group => 0;
     }
+
     djbdns::managed_file{[ "soa", "nameservers", "mx-records", "a_records", "txt_records", "cnames"]: }
 
 
