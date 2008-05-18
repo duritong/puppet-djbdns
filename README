@@ -21,6 +21,9 @@ It depends in general on David Schmitt's
 common-module. See: 
 - http://git.black.co.at/?p=module-common
 - https://github.com/duritong/puppet-common/tree
+And djbdns uses the daemontools, so you will have
+to use the daemontools module as well:
+- https://github.com/duritong/puppet-daemontools/tree
 
 Other dependencies:
 
