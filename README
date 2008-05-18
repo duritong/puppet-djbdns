@@ -1,3 +1,54 @@
 Module for djbdns
+#################
 
-This module is currently under development, please don't see it as stable
+written by immerda project group
+admin+puppet(at)immerda.ch
+
+GPLv3
+
+================================================
+
+This module is currently under development, 
+please don't treat it as stable!
+
+This module is used to configure a djbdns, as well
+to add new domain entries.
+
+Dependencies:
+=============
+
+It depends in general on David Schmitt's 
+common-module. See: 
+- http://git.black.co.at/?p=module-common
+- https://github.com/duritong/puppet-common/tree
+
+Other dependencies:
+
+If you want to use munin plugins, you should use 
+the munin module.
+If you want to use it in an selinux environment
+you should use the selinux module as well.
+
+
+Usage:
+======
+
+A possible usage case could be:
+
+class djbdns::example_com
+    # init domain
+    djbdns::adddomain{'example_com': } 
+    # there are some default ips and usages defined,
+    # please have a look at the define itself to change 
+    # them.
+
+    # add A record
+    djbdns::addArecord{'dev.example.com': ip => '1.2.3.4', }
+
+    # add ftp A record
+    djbdns::addArecord{'ftp.example.com': ip => '1.2.3.4', }
+
+    # add C name
+    djbdns::addCname{'ftp.www.example.com': target => 'ftp.example.com', }
+}
+
