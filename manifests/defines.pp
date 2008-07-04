@@ -159,7 +159,7 @@ define djbdns::addSPF(
     }
 }
 
-define djbdns::addReverse(
+define djbdns::addPointer(
     $ip,
     $domain = 'absent',
     $ttl = '3600',
@@ -170,7 +170,7 @@ define djbdns::addReverse(
         default => $domain
     }
     djbdns::entry{"reverse.d/000-reverse-${name}":
-        line => "=${real_domain}:${ip}:${ttl}::${location}",
+        line => "^${real_domain}:${ip}:${ttl}::${location}",
     }
 }
 
