@@ -43,10 +43,12 @@ class djbdns::base {
         uid => 105,
     }
     
-    exec { "/usr/bin/tinydns-conf tinydns dnslog /var/tinydns $ipaddress":
+    exec { 'tiny_dns_setup':
+        command => "/bin/tinydns-conf tinydns dnslog /var/tinydns $ipaddress",
         creates => "/var/tinydns/env/IP"
     }
-    exec { "/usr/bin/axfrdns-conf axfrdns dnslog /var/axfrdns /var/tinydns $ipaddress":
+    exec { 'axfr_dns_setup':
+        command => "/bin/axfrdns-conf axfrdns dnslog /var/axfrdns /var/tinydns $ipaddress",
         creates => "/var/axfrdns/env/IP"
     }
 
@@ -117,6 +119,13 @@ class djbdns::base {
 class djbdns::gentoo inherits djbdns::base {
     Package[djbdns]{
         category => 'net-dns',
+    }
+
+    Exec['tiny_dns_setup']{
+        command => "/usr/bin/tinydns-conf tinydns dnslog /var/tinydns $ipaddress",
+    }
+    Exec['axfr_dns_setup']{
+        command => "/usr/bin/axfrdns-conf axfrdns dnslog /var/axfrdns /var/tinydns $ipaddress",
     }
 }
 
