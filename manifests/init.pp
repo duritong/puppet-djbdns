@@ -12,6 +12,7 @@ import "defines.pp"
 class djbdns {
     case $operatingsystem {
         gentoo: { include djbdns::gentoo }
+        centos: { include djbdns::centos }
         default: { include djbdns::base }
     }
 
@@ -113,6 +114,15 @@ class djbdns::base {
         command => 'make -f /var/tinydns/root/Makefile -C /var/tinydns/root/',
         refreshonly => true,
 #        require => File["/var/lib/puppet/modules/djbdns"],
+    }
+}
+
+class djbdns::centos inherits djbdns::base {
+    service{'djbdns':
+        ensure => running,
+        enable => true,
+        hasstatus => true,
+        require => Package['djbdns'],
     }
 }
 
