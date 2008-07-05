@@ -33,16 +33,6 @@ class djbdns::base {
         ensure => present,
     }
     
-    user { "axfrdns":
-        allowdupe => false,
-        comment => "tinydnstcp",
-        ensure => present,
-        gid => 200,
-        home => "/nonexistent",
-        shell => "/usr/sbin/nologin",
-        uid => 105,
-    }
-    
     exec { 'tiny_dns_setup':
         command => "/bin/tinydns-conf tinydns dnslog /var/tinydns $ipaddress",
         creates => "/var/tinydns/env/IP"
@@ -119,6 +109,16 @@ class djbdns::base {
 class djbdns::gentoo inherits djbdns::base {
     Package[djbdns]{
         category => 'net-dns',
+    }
+
+    user { "axfrdns":
+        allowdupe => false,
+        comment => "tinydnstcp",
+        ensure => present,
+        gid => 200,
+        home => "/nonexistent",
+        shell => "/usr/sbin/nologin",
+        uid => 105,
     }
 
     Exec['tiny_dns_setup']{
