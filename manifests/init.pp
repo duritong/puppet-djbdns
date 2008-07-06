@@ -13,7 +13,6 @@ class djbdns {
     case $operatingsystem {
         gentoo: { include djbdns::gentoo }
         centos: { include djbdns::centos }
-        debian: { include djbdns::debian }
         default: { include djbdns::base }
     }
 
@@ -56,10 +55,8 @@ class djbdns::base {
 
     # tcp file, must make afterwards
     file { "/var/axfrdns/tcp":
-        ensure => "present",
         source => "puppet://$server/djbdns/axfrdnstcp",
-        owner => tinydns, 
-        group => 0,
+        owner => tinydns, group => 0, mode => 0644;
     }
     exec { "/usr/bin/make -f /var/axfrdns/Makefile -C /var/axfrdns/":
         subscribe => File["/var/axfrdns/tcp"],
@@ -116,12 +113,6 @@ class djbdns::base {
         command => 'make -f /var/tinydns/root/Makefile -C /var/tinydns/root/',
         refreshonly => true,
 #        require => File["/var/lib/puppet/modules/djbdns"],
-    }
-}
-
-class djbdns::debian inherits djbdns::base {
-    File['djbdns_data_file']{
-        path => '/etc/tinydns/root/data',
     }
 }
 
