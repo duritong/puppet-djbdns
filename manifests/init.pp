@@ -13,6 +13,7 @@ class djbdns {
     case $operatingsystem {
         gentoo: { include djbdns::gentoo }
         centos: { include djbdns::centos }
+        debian: { include djbdns::debian }
         default: { include djbdns::base }
     }
 
@@ -101,7 +102,8 @@ class djbdns::base {
 #    }
 
     # currently simply deploying the data file
-    file{'/var/tinydns/root/data':
+    file{'djbdns_data_file':
+        path => '/var/tinydns/root/data',
         source => [ "puppet://$server/files/djbdns/${fqdn}/data",
                     "puppet://$server/files/djbdns/${domain}/data",
                     "puppet://$server/files/djbdns/data",
@@ -114,6 +116,12 @@ class djbdns::base {
         command => 'make -f /var/tinydns/root/Makefile -C /var/tinydns/root/',
         refreshonly => true,
 #        require => File["/var/lib/puppet/modules/djbdns"],
+    }
+}
+
+class djbdns::debian inherits djbdns::base {
+    File['djbdns_data_file']{
+        path => '/etc/tinydns/root/data',
     }
 }
 
