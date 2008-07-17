@@ -146,7 +146,7 @@ class djbdns::gentoo inherits djbdns::usrbin {
 
 class djbdns::debian inherits djbdns::usrbin {
     User['axfrdns']{
-        gid => 104,
+        uid => 104,
     }
 }
 
