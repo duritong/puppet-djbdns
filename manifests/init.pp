@@ -12,6 +12,7 @@ import "defines.pp"
 class djbdns {
     case $operatingsystem {
         gentoo: { include djbdns::gentoo }
+        debian: { include djbdns::debian }
         centos: { include djbdns::centos }
         default: { include djbdns::base }
     }
@@ -125,20 +126,27 @@ class djbdns::centos inherits djbdns::base {
     }
 }
 
-class djbdns::gentoo inherits djbdns::base {
-    Package[djbdns]{
-        category => 'net-dns',
-    }
-
+class djbdns::usrbin inherits djbdns::base {
     Exec['tiny_dns_setup']{
         command => "/usr/bin/tinydns-conf tinydns dnslog /var/tinydns $ipaddress",
     }
     Exec['axfr_dns_setup']{
         command => "/usr/bin/axfrdns-conf axfrdns dnslog /var/axfrdns /var/tinydns $ipaddress",
     }
+}
 
-    User['axfrs']{
+class djbdns::gentoo inherits djbdns::usrbin {
+    Package[djbdns]{
+        category => 'net-dns',
+    }
+    User['axfrdns']{
         gid => 200,
+    }
+}
+
+class djbdns::debian inherits djbdns::usrbin {
+    User['axfrdns']{
+        gid => 104,
     }
 }
 
