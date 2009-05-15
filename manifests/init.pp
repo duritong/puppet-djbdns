@@ -47,28 +47,34 @@ class djbdns::base {
 
     exec { 'tiny_dns_setup':
         command => "/bin/tinydns-conf tinydns dnslog /var/tinydns $ipaddress",
-        creates => "/var/tinydns/env/IP"
+        creates => "/var/tinydns/env/IP",
+        require => Package['djbdns'],
     }
     exec { 'axfr_dns_setup':
         command => "/bin/axfrdns-conf axfrdns dnslog /var/axfrdns /var/tinydns $ipaddress",
-        creates => "/var/axfrdns/env/IP"
+        creates => "/var/axfrdns/env/IP",
+        require => Package['djbdns'],
     }
 
     # tcp file, must make afterwards
     file { "/var/axfrdns/tcp":
         source => "puppet://$server/djbdns/axfrdnstcp",
+        require => Package['djbdns'],
         owner => tinydns, group => 0, mode => 0644;
     }
     exec { "/usr/bin/make -f /var/axfrdns/Makefile -C /var/axfrdns/":
         subscribe => File["/var/axfrdns/tcp"],
+        require => Package['djbdns'],
         refreshonly => true
     }
 
     daemontools::service{"tinydns":
-        source => "/var/tinydns"
+        source => "/var/tinydns",
+        require => Package['djbdns'],
     }
     daemontools::service{"axfrdns":
-        source => "/var/axfrdns"
+        source => "/var/axfrdns",
+        require => Package['djbdns'],
     }
 
     file { "/var/lib/puppet/modules/djbdns":
