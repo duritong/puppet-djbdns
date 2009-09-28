@@ -18,4 +18,8 @@ class djbdns {
     if $use_munin {
         include munin::plugins::djbdns
     }
+
+    if $use_shorewall {
+      include shorewall::rules::dns
+    }
 }
