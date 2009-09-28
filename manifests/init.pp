@@ -17,10 +17,6 @@ class djbdns {
         default: { include djbdns::base }
     }
 
-    if $selinux {
-        include djbdns::selinux
-    }
-
     if $use_munin {
         include munin::plugins::djbdns
     }
