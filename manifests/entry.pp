@@ -1,4 +1,5 @@
 define djbdns::entry ($line) {
+    include djbdns::modules_dir
     $target = "/var/lib/puppet/modules/djbdns/${name}"
     $dir = dirname($target)
     file { $target:

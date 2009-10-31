@@ -5,8 +5,6 @@
 # http://summersoft.fay.ar.us/pub/qmail/djbdns/
 #
 
-modules_dir { "djbdns": }
-
 class djbdns {
     case $operatingsystem {
         gentoo: { include djbdns::gentoo }
