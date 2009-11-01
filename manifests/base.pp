@@ -29,7 +29,7 @@ class djbdns::base {
 
     # tcp file, must make afterwards
     file { "/var/axfrdns/tcp":
-        source => "puppet://$server/djbdns/axfrdnstcp",
+        source => "puppet://$server/modules/djbdns/axfrdnstcp",
         require => Package['djbdns'],
         owner => tinydns, group => 0, mode => 0644;
     }
@@ -82,7 +82,7 @@ class djbdns::base {
         source => [ "puppet://$server/files/djbdns/${fqdn}/data",
                     "puppet://$server/files/djbdns/${domain}/data",
                     "puppet://$server/files/djbdns/data",
-                    "puppet://$server/djbdns/data" ],
+                    "puppet://$server/modules/djbdns/data" ],
         notify => Exec['generate_data_db'],
         owner => root, group => 0, mode => 0644;
     }
