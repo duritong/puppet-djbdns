@@ -78,6 +78,7 @@ class djbdns::base {
         path => '/var/tinydns/root/data',
         source => [ "puppet://$server/modules/site-djbdns/${fqdn}/data",
                     "puppet://$server/modules/site-djbdns/${domain}/data",
+                    "puppet://$server/modules/site-djbdns/${dns_cluster}/data",
                     "puppet://$server/modules/site-djbdns/data",
                     "puppet://$server/modules/djbdns/data" ],
         notify => Exec['generate_data_db'],
