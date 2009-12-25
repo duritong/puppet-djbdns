@@ -6,14 +6,11 @@ class djbdns::base {
         ensure => present,
     }
     
-    user { "axfrdns":
-        allowdupe => false,
-        comment => "tinydnstcp",
-        ensure => present,
-        gid => 105,
-        home => "/nonexistent",
+    user::managed{ "axfrdns":
+        homedir => "/nonexistent",
+        managehome => false,
         shell => "/usr/sbin/nologin",
-        uid => 105,
+        uid => 105, gid => 105;
     }
 
     exec { 'tiny_dns_setup':
