@@ -1,5 +1,5 @@
 class djbdns::debian inherits djbdns::usrbin {
-    User['axfrdns']{
+    User::Managed['axfrdns']{
         uid => 104,
         gid => 65534,
     }
