@@ -61,15 +61,15 @@ class djbdns::base {
 #        notify => Exec['generate_data_db'],
 #        require => File["/var/lib/puppet/modules/djbdns"],
 #        subscribe => [
-#            Exec["concat_/var/lib/puppet/modules/djbdns/00-headers"],
-#            Exec["concat_/var/lib/puppet/modules/djbdns/soa"],
-#            Exec["concat_/var/lib/puppet/modules/djbdns/nameservers"],
-#            Exec["concat_/var/lib/puppet/modules/djbdns/mx-records"],
-#            Exec["concat_/var/lib/puppet/modules/djbdns/a_records"],
-#            Exec["concat_/var/lib/puppet/modules/djbdns/txt_records"],
-#            Exec["concat_/var/lib/puppet/modules/djbdns/spf"],
-#            Exec["concat_/var/lib/puppet/modules/djbdns/reverse"],
-#            Exec["concat_/var/lib/puppet/modules/djbdns/cnames"]
+#            File["/var/lib/puppet/modules/djbdns/00-headers"],
+#            File["/var/lib/puppet/modules/djbdns/soa"],
+#            File["/var/lib/puppet/modules/djbdns/nameservers"],
+#            File["/var/lib/puppet/modules/djbdns/mx-records"],
+#            File["/var/lib/puppet/modules/djbdns/a_records"],
+#            File["/var/lib/puppet/modules/djbdns/txt_records"],
+#            File["/var/lib/puppet/modules/djbdns/spf"],
+#            File["/var/lib/puppet/modules/djbdns/reverse"],
+#            File["/var/lib/puppet/modules/djbdns/cnames"]
 #        ],
 #    }
 
