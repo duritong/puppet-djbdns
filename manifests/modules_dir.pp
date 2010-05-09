@@ -1,3 +1,4 @@
 class djbdns::modules_dir {
-  modules_dir { "djbdns": }
+    include common::moduledir
+    module_dir { "djbdns": }
 }
