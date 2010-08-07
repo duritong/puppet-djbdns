@@ -7,10 +7,10 @@ class djbdns::centos inherits djbdns::base {
     }
 
     file{'/etc/sysconfig/djbdns.secondaries':
-        source => [ "puppet://$server/modules/site-djbdns/sysconfig/${fqdn}/djbdns.secondaries",
-                    "puppet://$server/modules/site-djbdns/sysconfig/djbdns.secondaries",
-                    "puppet://$server/modules/djbdns/sysconfig/${operatingsystem}/djbdns.secondaries",
-                    "puppet://$server/modules/djbdns/sysconfig/djbdns.secondaries" ],
+        source => [ "puppet:///modules/site-djbdns/sysconfig/${fqdn}/djbdns.secondaries",
+                    "puppet:///modules/site-djbdns/sysconfig/djbdns.secondaries",
+                    "puppet:///modules/djbdns/sysconfig/${operatingsystem}/djbdns.secondaries",
+                    "puppet:///modules/djbdns/sysconfig/djbdns.secondaries" ],
         require => Package['djbdns'],
         owner => root, group => 0, mode => 0644;
     }

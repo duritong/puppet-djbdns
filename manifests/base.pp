@@ -26,7 +26,7 @@ class djbdns::base {
 
     # tcp file, must make afterwards
     file { "/var/axfrdns/tcp":
-        source => "puppet://$server/modules/djbdns/axfrdnstcp",
+        source => "puppet:///modules/djbdns/axfrdnstcp",
         require => Package['djbdns'],
         owner => tinydns, group => 0, mode => 0644;
     }
@@ -76,11 +76,11 @@ class djbdns::base {
     # currently simply deploying the data file
     file{'djbdns_data_file':
         path => '/var/tinydns/root/data',
-        source => [ "puppet://$server/modules/site-djbdns/${fqdn}/data",
-                    "puppet://$server/modules/site-djbdns/${domain}/data",
-                    "puppet://$server/modules/site-djbdns/${dns_cluster}/data",
-                    "puppet://$server/modules/site-djbdns/data",
-                    "puppet://$server/modules/djbdns/data" ],
+        source => [ "puppet:///modules/site-djbdns/${fqdn}/data",
+                    "puppet:///modules/site-djbdns/${domain}/data",
+                    "puppet:///modules/site-djbdns/${dns_cluster}/data",
+                    "puppet:///modules/site-djbdns/data",
+                    "puppet:///modules/djbdns/data" ],
         notify => Exec['generate_data_db'],
         owner => root, group => 0, mode => 0644;
     }
