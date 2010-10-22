@@ -2,15 +2,28 @@ class djbdns::base {
   #we need daemontools for djbdns
   include daemontools
 
-  package { 'djbdns':
-    ensure => present,
+  group{
+    'dnscache':
+      before => Package['djbdns'],
+      gid => 106;
+    'dnslog':
+      before => Package['djbdns'],
+      gid => 103;
+    'tinydns':
+      before => Package['djbdns'],
+      gid => 104;
   }
 
   user::managed{ "axfrdns":
     homedir => "/nonexistent",
     managehome => false,
     shell => "/usr/sbin/nologin",
+    before => Package['djbdns'],
     uid => 105, gid => 105;
+  }
+
+  package { 'djbdns':
+    ensure => present,
   }
 
   exec { 'tiny_dns_setup':
