@@ -45,35 +45,6 @@ class djbdns::base {
         require => Package['djbdns'],
     }
 
-    file { "/var/lib/puppet/modules/djbdns":
-        ensure => directory,
-        force => true,
-        mode => 0755, owner => root, group => 0;
-    }
-
-#    this would be the new style which currently doesn't work
-#    djbdns::managed_file{[ "00-headers", "soa", "nameservers", "mx-records", "a_records", "txt_records", "cnames", "spf", "reverse"]: }
-#
-#
-#    exec{'copy_data':
-#        command => 'cat `find /var/lib/puppet/modules/djbdns/ -maxdepth 1 -type f | sort -n` > /var/tinydns/root/data',
-#        refreshonly => true,
-#        notify => Exec['generate_data_db'],
-#        require => File["/var/lib/puppet/modules/djbdns"],
-#        subscribe => [
-#            File["/var/lib/puppet/modules/djbdns/00-headers"],
-#            File["/var/lib/puppet/modules/djbdns/soa"],
-#            File["/var/lib/puppet/modules/djbdns/nameservers"],
-#            File["/var/lib/puppet/modules/djbdns/mx-records"],
-#            File["/var/lib/puppet/modules/djbdns/a_records"],
-#            File["/var/lib/puppet/modules/djbdns/txt_records"],
-#            File["/var/lib/puppet/modules/djbdns/spf"],
-#            File["/var/lib/puppet/modules/djbdns/reverse"],
-#            File["/var/lib/puppet/modules/djbdns/cnames"]
-#        ],
-#    }
-
-    # currently simply deploying the data file
     file{'djbdns_data_file':
         path => '/var/tinydns/root/data',
         source => [ "puppet:///modules/site-djbdns/${fqdn}/data",
@@ -81,6 +52,7 @@ class djbdns::base {
                     "puppet:///modules/site-djbdns/${dns_cluster}/data",
                     "puppet:///modules/site-djbdns/data",
                     "puppet:///modules/djbdns/data" ],
+        require => Package['djbdns'],
         notify => Exec['generate_data_db'],
         owner => root, group => 0, mode => 0644;
     }
@@ -88,6 +60,5 @@ class djbdns::base {
     exec{'generate_data_db':
         command => 'make -f /var/tinydns/root/Makefile -C /var/tinydns/root/',
         refreshonly => true,
-#        require => File["/var/lib/puppet/modules/djbdns"],
     }
 }
