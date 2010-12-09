@@ -27,7 +27,7 @@ define djbdns::adddomain(
     case $additionalnameservers {
         'absent': { info("no additional nameservers defined") }
         default: {
-            $nameservers = gsub(split($additionalnameservers, " "), "(.+)", "&${name}::\\1.:")
+            $nameservers = regsubst(split($additionalnameservers, " "), "(.+)", "&${name}::\\1.:")
             djbdns::addaslist{$nameservers: }
         }
     }
