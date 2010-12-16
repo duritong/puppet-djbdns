@@ -6,9 +6,6 @@ class djbdns::base {
     'dnscache':
       before => Package['djbdns'],
       gid => 106;
-    'tinydns':
-      before => Package['djbdns'],
-      gid => 104;
   }
 
   user::managed{ "axfrdns":

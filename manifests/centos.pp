@@ -1,11 +1,16 @@
 class djbdns::centos inherits djbdns::base {
 
-  user::managed{ "dnslog":
-    homedir => "/nonexistent",
-    managehome => false,
-    shell => "/usr/sbin/nologin",
-    before => Package['djbdns'],
-    uid => 103, gid => 103;
+  User::Managed{
+      homedir => "/nonexistent",
+      managehome => false,
+      shell => "/usr/sbin/nologin",
+      before => Package['djbdns'],
+  }
+  user::managed{
+    'dnslog':
+      uid => 103, gid => 103;
+    'tinydns':
+      uid => 104, gid => 104;
   }
 
   service{'djbdns':

@@ -1,8 +1,11 @@
 class djbdns::gentoo inherits djbdns::usrbin {
-  user{
+  group{
     'dnslog':
       before => Package['djbdns'],
       gid => 103;
+    'tinydns':
+      before => Package['djbdns'],
+      gid => 104;
   }
 
   Package[djbdns]{
