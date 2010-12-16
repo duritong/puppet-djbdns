@@ -1,8 +1,14 @@
 class djbdns::gentoo inherits djbdns::usrbin {
-    Package[djbdns]{
-        category => 'net-dns',
-    }
-    User::Managed['axfrdns']{
-        gid => 200,
-    }
+  user{
+    'dnslog':
+      before => Package['djbdns'],
+      gid => 103;
+  }
+
+  Package[djbdns]{
+    category => 'net-dns',
+  }
+  User::Managed['axfrdns']{
+    gid => 200,
+  }
 }

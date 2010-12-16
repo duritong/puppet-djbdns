@@ -6,9 +6,6 @@ class djbdns::base {
     'dnscache':
       before => Package['djbdns'],
       gid => 106;
-    'dnslog':
-      before => Package['djbdns'],
-      gid => 103;
     'tinydns':
       before => Package['djbdns'],
       gid => 104;
